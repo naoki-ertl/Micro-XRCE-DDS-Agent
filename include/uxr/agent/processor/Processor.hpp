@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <vector>
 #include <mutex>
+#include <wiringPi.h>
 
 namespace dds {
 namespace xrce {
@@ -131,6 +132,7 @@ private:
             std::chrono::milliseconds timeout);
 
 private:
+//     int GPIO_Debug = 3; //物理ピン 15 
     Server<EndPoint>& server_;
     Middleware::Kind middleware_kind_;
     Root& root_;

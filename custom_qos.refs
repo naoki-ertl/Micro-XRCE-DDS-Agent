@@ -1,0 +1,35 @@
+<profiles>
+    <participant profile_name="participant_profile">
+        <rtps>
+            <name>default_xrce_participant</name>
+        </rtps>
+    </participant>
+
+    <topic profile_name="my_qos_label__t">
+        <name>rt/my_topic_name</name>
+        <dataType>std_msgs::msg::dds_::Int32_</dataType>
+        <historyQos>
+          <kind>KEEP_LAST</kind>
+          <depth>20</depth>
+        </historyQos>
+    </topic>
+
+    <data_writer profile_name="my_qos_label__dw">
+        <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+        <qos>
+          <reliability>
+            <kind>RELIABLE</kind>
+          </reliability>
+        </qos>
+        <topic>
+            <kind>NO_KEY</kind>
+            <name>rt/my_topic_name</name>
+            <dataType>std_msgs::msg::dds_::Int32_</dataType>
+            <historyQos>
+                <kind>KEEP_LAST</kind>
+                <depth>20</depth>
+            </historyQos>
+        </topic>
+    </data_writer>
+
+</profiles>

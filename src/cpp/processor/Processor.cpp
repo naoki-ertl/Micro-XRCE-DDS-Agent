@@ -105,34 +105,34 @@ void Processor<EndPoint>::process_input_packet(
                 process_input_message(*client, input_packet);
             }
 
-            // if (is_reliable_stream(stream_id))
-            // {
-            //     dds::xrce::MessageHeader acknack_header;
-            //     acknack_header.session_id(header.session_id());
-            //     acknack_header.stream_id(dds::xrce::STREAMID_NONE);
-            //     acknack_header.sequence_nr(0x00);
-            //     acknack_header.client_key(header.client_key());
+            if (is_reliable_stream(stream_id))
+            {
+                dds::xrce::MessageHeader acknack_header;
+                acknack_header.session_id(header.session_id());
+                acknack_header.stream_id(dds::xrce::STREAMID_NONE);
+                acknack_header.sequence_nr(0x00);
+                acknack_header.client_key(header.client_key());
 
-            //     dds::xrce::ACKNACK_Payload acknack_payload;
-            //     client->session().fill_acknack(stream_id, acknack_payload);
-            //     acknack_payload.stream_id(header.stream_id());
+                dds::xrce::ACKNACK_Payload acknack_payload;
+                client->session().fill_acknack(stream_id, acknack_payload);
+                acknack_payload.stream_id(header.stream_id());
 
-            //     dds::xrce::SubmessageHeader acknack_subheader;
-            //     acknack_subheader.submessage_id(dds::xrce::ACKNACK);
-            //     acknack_subheader.flags(dds::xrce::FLAG_LITTLE_ENDIANNESS);
-            //     acknack_subheader.submessage_length(uint16_t(acknack_payload.getCdrSerializedSize()));
+                dds::xrce::SubmessageHeader acknack_subheader;
+                acknack_subheader.submessage_id(dds::xrce::ACKNACK);
+                acknack_subheader.flags(dds::xrce::FLAG_LITTLE_ENDIANNESS);
+                acknack_subheader.submessage_length(uint16_t(acknack_payload.getCdrSerializedSize()));
 
-            //     const size_t message_size = acknack_header.getCdrSerializedSize() +
-            //                                 acknack_subheader.getCdrSerializedSize() +
-            //                                 acknack_payload.getCdrSerializedSize();
+                const size_t message_size = acknack_header.getCdrSerializedSize() +
+                                            acknack_subheader.getCdrSerializedSize() +
+                                            acknack_payload.getCdrSerializedSize();
 
-            //     OutputPacket<EndPoint> output_packet;
-            //     output_packet.destination = input_packet.source;
-            //     output_packet.message.reset(new OutputMessage(acknack_header, message_size));
-            //     output_packet.message->append_submessage(dds::xrce::ACKNACK, acknack_payload);
+                OutputPacket<EndPoint> output_packet;
+                output_packet.destination = input_packet.source;
+                output_packet.message.reset(new OutputMessage(acknack_header, message_size));
+                output_packet.message->append_submessage(dds::xrce::ACKNACK, acknack_payload);
 
-            //     server_.push_output_packet(std::move(output_packet));
-            // }
+                server_.push_output_packet(std::move(output_packet));
+            }
         }
         else
         {
@@ -322,11 +322,29 @@ bool Processor<EndPoint>::process_create_submessage(
         ProxyClient& client,
         InputPacket<EndPoint>& input_packet)
 {
+    // wiringPiSetup () ;
+    // pinMode (GPIO_Debug, OUTPUT) ;
+    // //digitalWrite (GPIO_Debug, 1) ;
+    // //digitalWrite (GPIO_Debug, 0) ;
+
+    // //Reliabilityの確認のための出力
+    // FILE* fp = fopen("test.txt", "a");
+    // if (fp == NULL) {
+    //     fputs("ファイルオープンに失敗しました。\n", stderr);
+    //     exit(EXIT_FAILURE);
+    // }
+
+
     bool rv = true;
     dds::xrce::CreationMode creation_mode;
     dds::xrce::StreamId stream_kind = is_reliable_stream(input_packet.message->get_header().stream_id()) ?
             dds::xrce::STREAMID_BUILTIN_RELIABLE : dds::xrce::STREAMID_BUILTIN_BEST_EFFORTS;
 
+    // digitalWrite (GPIO_Debug, 1) ;
+    // digitalWrite (GPIO_Debug, 0) ;
+    // printf("1:Reliable, 2:BestEffort \n");
+    // printf("%d\n", is_reliable_stream(input_packet.message->get_header().stream_id()));
+    
     creation_mode.reuse(0 < (input_packet.message->get_subheader().flags() & dds::xrce::FLAG_REUSE));
     creation_mode.replace(0 < (input_packet.message->get_subheader().flags() & dds::xrce::FLAG_REPLACE));
 
@@ -427,7 +445,7 @@ bool Processor<EndPoint>::process_write_data_submessage(
         ProxyClient& client,
         InputPacket<EndPoint>& input_packet)
 {
-    std::cout << "Read_Data  |  Stream ID: " << cb_args.stream_id << std::endl; // Output the stream ID
+    //std::cout << "Read_Data  |  Stream ID: " << cb_args.stream_id << std::endl; // Output the stream ID
     bool deserialized = false, written = false;
     uint8_t flags = input_packet.message->get_subheader().flags() & 0x0E;
     size_t submessage_length = input_packet.message->get_subheader().submessage_length();

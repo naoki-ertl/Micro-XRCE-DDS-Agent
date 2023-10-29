@@ -1,0 +1,47 @@
+<!-- TOPIC -->
+<dds>
+  <topic>
+      <name>[TOPIC NAME]</name>
+      <dataType>[TOPIC TYPE]</dataType>
+  </topic>
+</dds>
+
+<!-- DATA WRITER -->
+<dds>
+  <data_writer>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+      <qos>
+        <reliability>
+            <kind>[WRITER RELIABILITY]</kind>
+        </reliability>
+      </qos>
+      <topic>
+        <kind>NO_KEY</kind>
+        <name>[WRITER NAME]</name>
+        <dataType>[WRITER TYPE]</dataType>
+        <historyQos>
+            <kind>KEEP_ALL</kind>
+        </historyQos>
+      </topic>
+  </data_writer>
+</dds>
+
+<!-- DATA READER -->
+<dds>
+  <data_reader>
+      <historyMemoryPolicy>PREALLOCATED_WITH_REALLOC</historyMemoryPolicy>
+      <qos>
+        <reliability>
+            <kind>[READER RELIABILITY]</kind>
+        </reliability>
+      </qos>
+      <topic>
+        <kind>NO_KEY</kind>
+        <name>[READER NAME]</name>
+        <dataType>[READER TYPE]</dataType>
+        <historyQos>
+            <kind>KEEP_ALL</kind>
+        </historyQos>
+      </topic>
+  </data_reader>
+</dds>

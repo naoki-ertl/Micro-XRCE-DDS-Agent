@@ -153,6 +153,12 @@ foreach(d ${_deps})
     find_package(${_name} ${_version} REQUIRED)
 endforeach()
 
+# To set up WiringPi
+# Locate libraries and headers
+find_package(WiringPi REQUIRED)
+find_package(Threads REQUIRED) 
+
+
 ###############################################################################
 # Sources
 ###############################################################################
@@ -299,6 +305,8 @@ target_link_libraries(${PROJECT_NAME}
         $<$<PLATFORM_ID:Windows>:ws2_32>
         $<$<PLATFORM_ID:Windows>:iphlpapi>
         $<$<BOOL:${UAGENT_LOGGER_PROFILE}>:spdlog::spdlog>
+        ${WIRINGPI_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
     PRIVATE
         $<$<BOOL:${UAGENT_FAST_PROFILE}>:fastrtps>
         $<$<BOOL:${UAGENT_P2P_PROFILE}>:microxrcedds_client>
@@ -312,6 +320,7 @@ target_include_directories(${PROJECT_NAME} BEFORE
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
         $<TARGET_PROPERTY:fastcdr,INTERFACE_INCLUDE_DIRECTORIES>
+        ${WIRINGPI_INCLUDE_DIRS}
     PRIVATE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/cpp>
         $<$<BOOL:${UAGENT_FAST_PROFILE}>:$<TARGET_PROPERTY:fastrtps,INTERFACE_INCLUDE_DIRECTORIES>>
